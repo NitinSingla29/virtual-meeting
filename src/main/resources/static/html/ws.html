@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>WebSocket Test</title>
+
+    <link rel="stylesheet" href="../css/ws.css">
+    <script type="text/javascript" src="../js/jquery-3.1.1.js"></script>
+    <script type="text/javascript" language="javascript">
+        $(document).ready(function () {
+            wsUri = "";
+            $("#connectionButton").click(function () {
+                wsUri = $("#connectionUrl").val()
+                websocket = new WebSocket(wsUri);
+                websocket.onopen = function (evt) {
+                    $("#connectionState").text("Connected to WebSocket")
+
+                };
+                websocket.onerror = function (evt) {
+                    $("#error").text("Error occured")
+                };
+                websocket.onclose = function (evt) {
+                    $("#connectionState").text("Connection Closed")
+                };
+                websocket.onmessage = function (evt) {
+                    $("#messageRecived").text("Meassage Recieved: " + evt.data)
+                };
+            });
+            $("#submitMessage").click(function () {
+                if (websocket && websocket.readyState === WebSocket.OPEN) {
+                    websocket.send($("#messageToSubmit").val())
+                } else {
+                    $("#messageRecived").text("Failed to send message. Probably connection is already closed.")
+                }
+            });
+            $("#disconnect").click(function () {
+                // Close the connection, if open.
+                if (websocket.readyState === WebSocket.OPEN) {
+                    websocket.close();
+                }
+            });
+
+        });
+    </script>
+</head>
+<body>
+<h2>WebSocket Test</h2>
+<div class="wsContainer">
+    <div class="connectionContainer">
+        Connection Url: <input type="text" id="connectionUrl">
+        <button id="connectionButton" type="button">Connect To Server</button>
+        <button id="disconnect" type="button">Disconnect Connection</button>
+
+        <div class="">
+            <div id="connectionState"></div>
+        </div>
+    </div>
+
+    <br/>
+    <div class="messageContainer">
+        Message to send: <input type="text" id="messageToSubmit">
+        <button id="submitMessage" type="button">Send Message</button>
+        <div id="messageRecived"></div>
+        <div id="error"></div>
+    </div>
+
+</div>
+</body>
+</html>
