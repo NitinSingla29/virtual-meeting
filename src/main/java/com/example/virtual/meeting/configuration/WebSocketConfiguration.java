@@ -1,6 +1,7 @@
 package com.example.virtual.meeting.configuration;
 
 import com.example.virtual.meeting.wshandler.MeetingEndpointHandler;
+import com.example.virtual.meeting.wshandler.WebSocketTestEndpointHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,11 +16,17 @@ import org.springframework.web.socket.server.support.HttpSessionHandshakeInterce
 public class WebSocketConfiguration implements WebSocketConfigurer {
 
     @Autowired
+    private WebSocketTestEndpointHandler webSocketTestEndpointHandler;
+
+    @Autowired
     private MeetingEndpointHandler meetingEndpointHandler;
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry webSocketHandlerRegistry) {
-        webSocketHandlerRegistry.addHandler(meetingEndpointHandler, "/ws")
+        webSocketHandlerRegistry.addHandler(webSocketTestEndpointHandler, "/ws")
+                .addInterceptors(new HttpSessionHandshakeInterceptor());
+
+        webSocketHandlerRegistry.addHandler(meetingEndpointHandler, "/room")
                 .addInterceptors(new HttpSessionHandshakeInterceptor());
     }
 
