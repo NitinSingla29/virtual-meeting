@@ -26,7 +26,7 @@ public class WebSocketConfiguration implements WebSocketConfigurer {
         webSocketHandlerRegistry.addHandler(webSocketTestEndpointHandler, "/ws")
                 .addInterceptors(new HttpSessionHandshakeInterceptor());
 
-        webSocketHandlerRegistry.addHandler(meetingEndpointHandler, "/room")
+        webSocketHandlerRegistry.addHandler(meetingEndpointHandler, "/vmr")
                 .addInterceptors(new HttpSessionHandshakeInterceptor());
     }
 
