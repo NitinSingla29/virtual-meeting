@@ -14,14 +14,23 @@
 
         <script type="text/javascript" src="../js/wsadapter/adapter.js"></script>
         <script type="text/javascript" src="../js/wsadapter/common.js"></script>
-        <script type="text/javascript" src="../js/wsadapter/main.js"></script>
+        <script type="text/javascript" src="../js/wsadapter/vmr.js"></script>
         <script type="text/javascript" src="../js/wsadapter/lib/ga.js"></script>
 
         <title>WebRTC Virtual Meeting Test</title>
+        <style>
+            #videoElement {
+                width: 500px;
+                height: 375px;
+                background-color: #666;
+            }
+        </style>
     </head>
     <body>
         <div id="container">
-            <video id="gum-local" autoplay></video>
+            <video id="videoElement" autoplay>
+
+            </video>
 
             <div id="errorMsg"></div>
 
