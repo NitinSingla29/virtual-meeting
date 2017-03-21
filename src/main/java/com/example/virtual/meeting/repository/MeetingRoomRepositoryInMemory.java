@@ -47,4 +47,5 @@ public class MeetingRoomRepositoryInMemory implements MeetingRoomRepository {
     public MeetingRoom getMeetingRoom(String webSocketSessionId) {
         return this.sessionToRoomMap.get(webSocketSessionId);
     }
+
 }
