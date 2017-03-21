@@ -12,6 +12,7 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.AbstractWebSocketHandler;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
@@ -33,10 +34,11 @@ public class MeetingEndpointHandler extends AbstractWebSocketHandler {
             final String payload = message.getPayload();
             final MeetingRoomRequest meetingRoomRequest = jsonSerializer.read(payload, MeetingRoomRequest.class);
             final String webSocketSessionId = session.getId();
+            MeetingRoom meetingRoom = null
             switch (meetingRoomRequest.getMeetingRequestType()) {
                 case GETROOM :
                     int roomNumber = generateRoomNumber();
-                    MeetingRoom meetingRoom = meetingRoomRepository.getMeetingRoom(roomNumber);
+                    meetingRoom = meetingRoomRepository.getMeetingRoom(roomNumber);
                     if(meetingRoom==null) {
                         meetingRoom = new MeetingRoom(roomNumber,"MeetingRomm"+ roomNumber);
                     }
@@ -47,7 +49,10 @@ public class MeetingEndpointHandler extends AbstractWebSocketHandler {
                     meetingRoomRepository.addAssociation(meetingRoomRequest.getRoomNumber(),webSocketSessionId);
                     break;
                 default:
-                    sendToAll(meetingRoomRequest.getRoomNumber(),meetingRoomRequest.getMessage());
+                    meetingRoom = this.meetingRoomRepository.getMeetingRoom(meetingRoomRequest.getRoomNumber());
+                    final Set<String> associateSessionIds = meetingRoom.getWebSocketSessionIds();
+                    associateSessionIds.remove(webSocketSessionId);
+                    sendToAll(associateSessionIds,meetingRoomRequest.getMessage());
                     break;
             }
         } catch (IOException e) {
@@ -59,10 +64,8 @@ public class MeetingEndpointHandler extends AbstractWebSocketHandler {
         return new Random(System.currentTimeMillis()).nextInt();
     }
 
-    private void sendToAll(int roomNumber, String message) throws  IOException{
-        final MeetingRoom meetingRoom = this.meetingRoomRepository.getMeetingRoom(roomNumber);
-        final Set<String> associateSessionIds = meetingRoom.getWebSocketSessionIds();
-        for (String sessionId: associateSessionIds) {
+    private void sendToAll(Collection<String> sessionIds, String message) throws  IOException{
+        for (String sessionId: sessionIds) {
             final WebSocketSession webSocketSession = this.webSocketSessionRepository.get(sessionId);
             webSocketSession.sendMessage(new TextMessage(message));
         }
