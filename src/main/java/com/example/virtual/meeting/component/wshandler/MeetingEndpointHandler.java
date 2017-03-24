@@ -61,7 +61,7 @@ public class MeetingEndpointHandler extends AbstractWebSocketHandler {
     }
 
     private List<String> getSessions(final MeetingRoom meetingRoom) {
-        return meetingRoom.getConnectedSessions().stream().map(u -> u.getSessionId()).collect(Collectors.toList());
+        return meetingRoom.getUserSessions().stream().map(u -> u.getSessionId()).collect(Collectors.toList());
     }
 
     private MeetingRoom createOrGetRoom(final MeetingRoomRequest meetingRoomRequest) {

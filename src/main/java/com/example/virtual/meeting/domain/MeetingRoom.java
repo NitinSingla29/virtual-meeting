@@ -10,12 +10,12 @@ public class MeetingRoom {
 
     private final int roomNumber;
     private final String roomName;
-    private final Set<UserSession> connectedSessions;
+    private final Set<UserSession> userSessions;
 
     public MeetingRoom(int roomNumber, String roomName) {
         this.roomNumber = roomNumber;
         this.roomName = roomName;
-        this.connectedSessions = new HashSet<>();
+        this.userSessions = new HashSet<>();
     }
 
     public MeetingRoom(int roomNumber) {
@@ -26,8 +26,8 @@ public class MeetingRoom {
         return roomName;
     }
 
-    public Set<UserSession> getConnectedSessions() {
-        return Collections.unmodifiableSet(connectedSessions);
+    public Set<UserSession> getUserSessions() {
+        return Collections.unmodifiableSet(userSessions);
     }
 
     @Override
@@ -60,6 +60,6 @@ public class MeetingRoom {
     }
 
     public void addSession(UserSession userSession) {
-        this.connectedSessions.add(userSession);
+        this.userSessions.add(userSession);
     }
 }
