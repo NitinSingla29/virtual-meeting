@@ -1,0 +1,27 @@
+.pagecontainer {
+    width: 800px;
+    margin: 0 auto;
+    background-color: lightblue;
+}
+.pagecontainer .pageheader {
+    height: 70px;
+    width: 100%;
+    text-align: center;
+}
+.pageTitle {
+    width: 65%;
+    height: 100%;
+    float: left;
+}
+.pageheader .userDetails {
+    width: 35%;
+    height: 100%;
+    float: left;
+    //background-color: brown;
+    text-align: right;
+}
+#useName {
+    margin-left: 10px;
+    margin-top: 20px;
+    margin-right: 10px;
+}

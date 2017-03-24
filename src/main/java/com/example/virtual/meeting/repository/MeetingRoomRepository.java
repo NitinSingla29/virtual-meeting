@@ -1,10 +1,8 @@
 package com.example.virtual.meeting.repository;
 
 import com.example.virtual.meeting.domain.MeetingRoom;
+import org.springframework.stereotype.Repository;
 
-/**
- * Created by NSingla on 26-02-2017.
- */
 public interface MeetingRoomRepository {
 
     MeetingRoom getMeetingRoom(int roomNumber);

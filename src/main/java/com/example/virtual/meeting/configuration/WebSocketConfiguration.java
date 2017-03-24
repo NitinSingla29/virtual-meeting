@@ -1,7 +1,7 @@
 package com.example.virtual.meeting.configuration;
 
-import com.example.virtual.meeting.wshandler.MeetingEndpointHandler;
-import com.example.virtual.meeting.wshandler.WebSocketTestEndpointHandler;
+import com.example.virtual.meeting.component.wshandler.MeetingEndpointHandler;
+import com.example.virtual.meeting.component.wshandler.WebSocketTestEndpointHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

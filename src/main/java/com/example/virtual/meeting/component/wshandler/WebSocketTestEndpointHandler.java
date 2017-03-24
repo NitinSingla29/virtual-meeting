@@ -1,4 +1,4 @@
-package com.example.virtual.meeting.wshandler;
+package com.example.virtual.meeting.component.wshandler;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.TextMessage;

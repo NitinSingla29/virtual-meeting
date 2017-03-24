@@ -3,20 +3,43 @@
     <head>
         <meta charset="UTF-8">
         <title>Chat Romm application</title>
-        <script type="text/javascript" src="../js/jquery-3.1.1.js"></script>
 
+        <link rel="stylesheet" href="../css/layout.css">
+        <link rel="stylesheet" href="../css/chat.css">
+
+        <script type="text/javascript" src="../js/lib/jquery-3.1.1.js"></script>
+        <script type="text/javascript" src="../js/lib/purl.js"></script>
+
+        <script type="text/javascript" src="../js/wsadapter/lib/ga.js"></script>
         <script type="text/javascript" src="../js/wsadapter/adapter.js"></script>
         <script type="text/javascript" src="../js/wsadapter/common.js"></script>
-        <script type="text/javascript" src="../js/wsadapter/chat.js"></script>
-        <script type="text/javascript" src="../js/wsadapter/rtclib.js"></script>
-        <script type="text/javascript" src="../js/wsadapter/lib/ga.js"></script>
+
+        <script type="text/javascript" src="../js/chat/chat.js"></script>
+
+
     </head>
     <body>
-        <div class="container">
-            <form name="chat_form">
-                <input type="text" class="search-query" placeholder="chat here" name="msg" id="chat_input">
-                <input type="submit"  id="chat_submit_btn"/>
-            </form>
+        <div class="pagecontainer">
+            <div class="pageheader">
+                <div class="pageTitle">
+                    <H1>Demo Chat Application</H1>
+                </div>
+                <div class="userDetails">
+                    <div id="useName">
+                        Logged in User: asasa
+                    </div>
+                </div>
+            </div>
+            <div class="roomContainer">
+                <div class="chattextarea"></div>
+                <div class="chatrooms"></div>
+                <div class="chatroomuser"></div>
+                <form name="chat_form">
+                    <input type="text" class="search-query" placeholder="chat here" name="msg" id="chat_input">
+                    <input type="submit"  id="chat_submit_btn"/>
+                </form>
+                <button type="button" id="endChatButton">Finish Chat</button>
+            </div>
 
             <div id="status"></div><br>
 

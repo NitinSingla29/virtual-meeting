@@ -1,13 +1,12 @@
 package com.example.virtual.meeting.repository;
 
 import com.example.virtual.meeting.domain.MeetingRoom;
+import org.springframework.stereotype.Repository;
 
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by NSingla on 26-02-2017.
- */
+@Repository
 public class MeetingRoomRepositoryInMemory implements MeetingRoomRepository {
 
     private Map<Integer, MeetingRoom> meetingRoomsMap = new HashMap<Integer, MeetingRoom>();
