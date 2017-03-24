@@ -1,9 +1,6 @@
 package com.example.virtual.meeting.main;
 
 import com.example.virtual.meeting.configuration.ApplicationConfiguration;
-import com.example.virtual.meeting.model.RequestType;
-import com.example.virtual.meeting.model.MeetingRoomRequest;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Import;

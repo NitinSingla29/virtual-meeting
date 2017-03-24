@@ -1,4 +1,4 @@
-package com.example.virtual.meeting.model;
+package com.example.virtual.meeting.dto;
 
 public class BaseRequest {
 

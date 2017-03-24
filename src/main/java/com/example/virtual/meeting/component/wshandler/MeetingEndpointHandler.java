@@ -2,8 +2,10 @@ package com.example.virtual.meeting.component.wshandler;
 
 import com.example.virtual.meeting.component.JsonSerializer;
 import com.example.virtual.meeting.domain.MeetingRoom;
-import com.example.virtual.meeting.model.BaseRequest;
-import com.example.virtual.meeting.model.MeetingRoomRequest;
+import com.example.virtual.meeting.dto.BaseRequest;
+import com.example.virtual.meeting.dto.MeetingRoomRequest;
+import com.example.virtual.meeting.dto.MeetingRoomResponse;
+import com.example.virtual.meeting.dto.RequestType;
 import com.example.virtual.meeting.repository.MeetingRoomRepository;
 import com.example.virtual.meeting.repository.WebSocketSessionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +16,10 @@ import org.springframework.web.socket.handler.AbstractWebSocketHandler;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 @Component
 public class MeetingEndpointHandler extends AbstractWebSocketHandler {
@@ -28,6 +33,8 @@ public class MeetingEndpointHandler extends AbstractWebSocketHandler {
     @Autowired
     private JsonSerializer jsonSerializer;
 
+    private AtomicInteger roomCounter = new AtomicInteger();
+
     public void handleTextMessage(final WebSocketSession session, final TextMessage message) {
         try {
             final String payload = message.getPayload();
@@ -37,16 +44,14 @@ public class MeetingEndpointHandler extends AbstractWebSocketHandler {
             MeetingRoom meetingRoom = null;
             switch(request.getRequestType()) {
                 case JOIN_ROOM:
-                    meetingRoomRequest = (MeetingRoomRequest) request;
+                    meetingRoomRequest = jsonSerializer.read(payload, MeetingRoomRequest.class);
                     meetingRoom = this.createOrGetRoom(meetingRoomRequest);
                     meetingRoomRepository.addAssociation(meetingRoom, webSocketSessionId);
-                    session.sendMessage(new TextMessage(jsonSerializer.writeObject(meetingRoom)));
+                    sendToAll(getSessions(meetingRoom), new
+                            MeetingRoomResponse
+                            (RequestType.JOIN_ROOM, meetingRoom));
                     break;
                 default:
-//                    meetingRoom = this.meetingRoomRepository.getMeetingRoom(request.getRoomNumber());
-//                    final Set<String> associateSessionIds = meetingRoom.getWebSocketSessionIds();
-//                    associateSessionIds.remove(webSocketSessionId);
-//                    sendToAll(associateSessionIds,"Hi");
                     break;
             }
         } catch(final IOException e) {
@@ -54,11 +59,16 @@ public class MeetingEndpointHandler extends AbstractWebSocketHandler {
         }
     }
 
+    private List<String> getSessions(final MeetingRoom meetingRoom) {
+        return meetingRoom.getConnectedSessions().stream().map(u -> u.getSessionId()).collect(Collectors.toList());
+    }
+
     private MeetingRoom createOrGetRoom(final MeetingRoomRequest meetingRoomRequest) {
         MeetingRoom meetingRoom = meetingRoomRepository.getMeetingRoom(meetingRoomRequest.getRoomNumber());
         if(meetingRoom == null) {
-            final int roomNumber = generateRoomNumber();
-            final String roomName = meetingRoomRequest.getName()!=null? meetingRoom.getRoomName() : "MeetingRomm" +
+            int roomNumber = meetingRoomRequest.getRoomNumber();
+            roomNumber = roomNumber == 0 ? roomCounter.incrementAndGet() : roomNumber;
+            final String roomName = meetingRoomRequest.getName() != null ? meetingRoom.getRoomName() : "MeetingRomm" +
                     roomNumber;
             meetingRoom = new MeetingRoom(roomNumber, roomName);
         }
@@ -69,10 +79,11 @@ public class MeetingEndpointHandler extends AbstractWebSocketHandler {
         return new Random(System.currentTimeMillis()).nextInt();
     }
 
-    private void sendToAll(final Collection<String> sessionIds, final String message) throws IOException {
+    private void sendToAll(final Collection<String> sessionIds, final Object message) throws IOException {
+        final TextMessage textMessage = new TextMessage(jsonSerializer.writeObject(message));
         for(final String sessionId : sessionIds) {
             final WebSocketSession webSocketSession = this.webSocketSessionRepository.get(sessionId);
-            webSocketSession.sendMessage(new TextMessage(message));
+            webSocketSession.sendMessage(textMessage);
         }
     }
 

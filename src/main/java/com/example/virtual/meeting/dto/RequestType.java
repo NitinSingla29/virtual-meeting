@@ -1,4 +1,4 @@
-package com.example.virtual.meeting.model;
+package com.example.virtual.meeting.dto;
 
 /**
  * Created by nsin79 on 3/21/2017.

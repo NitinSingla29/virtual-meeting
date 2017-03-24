@@ -1,6 +1,7 @@
 package com.example.virtual.meeting.repository;
 
 import com.example.virtual.meeting.domain.MeetingRoom;
+import com.example.virtual.meeting.dto.UserSession;
 import org.springframework.stereotype.Repository;
 
 import java.util.HashMap;
@@ -32,8 +33,8 @@ public class MeetingRoomRepositoryInMemory implements MeetingRoomRepository {
         throw new IllegalArgumentException("No meeting room exist for room number=" + roomNumber);
     }
 
-    private void addSession(String webSocketSessionId, MeetingRoom existingRoom) {
-        existingRoom.addSession(webSocketSessionId);
+    private void addSession(String userName, String webSocketSessionId, MeetingRoom existingRoom) {
+        existingRoom.addSession(new UserSession(userName,webSocketSessionId));
         sessionToRoomMap.put(webSocketSessionId, existingRoom);
     }
 

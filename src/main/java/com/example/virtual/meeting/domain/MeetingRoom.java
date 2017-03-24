@@ -1,22 +1,21 @@
 package com.example.virtual.meeting.domain;
 
+import com.example.virtual.meeting.dto.UserSession;
+
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * Created by NSingla on 26-02-2017.
- */
 public class MeetingRoom {
 
     private final int roomNumber;
     private final String roomName;
-    private final Set<String> webSocketSessionIds;
+    private final Set<UserSession> connectedSessions;
 
     public MeetingRoom(int roomNumber, String roomName) {
         this.roomNumber = roomNumber;
         this.roomName = roomName;
-        this.webSocketSessionIds = new HashSet<String>();
+        this.connectedSessions = new HashSet<>();
     }
 
     public MeetingRoom(int roomNumber) {
@@ -27,8 +26,8 @@ public class MeetingRoom {
         return roomName;
     }
 
-    public Set<String> getWebSocketSessionIds() {
-        return Collections.unmodifiableSet(webSocketSessionIds);
+    public Set<UserSession> getConnectedSessions() {
+        return Collections.unmodifiableSet(connectedSessions);
     }
 
     @Override
@@ -60,7 +59,7 @@ public class MeetingRoom {
         return roomNumber;
     }
 
-    public void addSession(String webSocketSessionId) {
-        this.webSocketSessionIds.add(webSocketSessionId);
+    public void addSession(UserSession userSession) {
+        this.connectedSessions.add(userSession);
     }
 }
