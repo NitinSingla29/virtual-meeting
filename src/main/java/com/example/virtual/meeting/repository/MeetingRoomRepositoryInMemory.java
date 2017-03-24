@@ -15,20 +15,20 @@ public class MeetingRoomRepositoryInMemory implements MeetingRoomRepository {
     private Map<String, MeetingRoom> sessionToRoomMap = new HashMap<>();
 
     @Override
-    public void addAssociation(MeetingRoom meetingRoom, String webSocketSessionId) {
+    public void addAssociation(MeetingRoom meetingRoom, String userName, String webSocketSessionId) {
         MeetingRoom existingRoom = meetingRoomsMap.get(meetingRoom.getRoomNumber());
         if (existingRoom == null) {
             meetingRoomsMap.put(meetingRoom.getRoomNumber(), meetingRoom);
             existingRoom = meetingRoom;
         }
-        addSession(webSocketSessionId, existingRoom);
+        addSession(userName, webSocketSessionId, existingRoom);
     }
 
     @Override
-    public void addAssociation(int roomNumber, String webSocketSessionId) {
+    public void addAssociation(int roomNumber, String userName, String webSocketSessionId) {
         MeetingRoom existingRoom = meetingRoomsMap.get(roomNumber);
         if (existingRoom != null) {
-            addSession(webSocketSessionId, existingRoom);
+            addSession(userName, webSocketSessionId, existingRoom);
         }
         throw new IllegalArgumentException("No meeting room exist for room number=" + roomNumber);
     }

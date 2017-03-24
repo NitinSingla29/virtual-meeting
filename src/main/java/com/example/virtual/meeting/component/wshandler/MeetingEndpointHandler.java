@@ -46,7 +46,8 @@ public class MeetingEndpointHandler extends AbstractWebSocketHandler {
                 case JOIN_ROOM:
                     meetingRoomRequest = jsonSerializer.read(payload, MeetingRoomRequest.class);
                     meetingRoom = this.createOrGetRoom(meetingRoomRequest);
-                    meetingRoomRepository.addAssociation(meetingRoom, webSocketSessionId);
+                    meetingRoomRepository.addAssociation(meetingRoom, meetingRoomRequest.getUserName(),
+                            webSocketSessionId);
                     sendToAll(getSessions(meetingRoom), new
                             MeetingRoomResponse
                             (RequestType.JOIN_ROOM, meetingRoom));
