@@ -16,6 +16,7 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.AbstractWebSocketHandler;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -46,7 +47,9 @@ public class MeetingEndpointHandler extends AbstractWebSocketHandler {
                     handleMeetingRoomUpdate(ResponseType.JOIN_ROOM, meetingRoom);
                     break;
                 default:
-                    break;
+                    final Collection<String> allLinkedConnections = getAllLinkedConnections(webSocketSessionId);
+                    allLinkedConnections.remove(webSocketSessionId);
+                    sendToAll(allLinkedConnections, message);
             }
         } catch(final IOException e) {
             e.printStackTrace();
@@ -59,6 +62,14 @@ public class MeetingEndpointHandler extends AbstractWebSocketHandler {
 
     private List<String> getSessions(final MeetingRoom meetingRoom) {
         return meetingRoom.getUserSessions().stream().map(u -> u.getSessionId()).collect(Collectors.toList());
+    }
+
+    private Collection<String> getAllLinkedConnections(String sessionId) {
+        final MeetingRoom meetingRoom = this.meetingRoomService.getMeetingRoom(sessionId);
+        if(meetingRoom != null) {
+            return getSessions(meetingRoom);
+        }
+        return new ArrayList<>();
     }
 
     private void sendToAll(final Collection<String> sessionIds, final Object message) throws IOException {

@@ -10,15 +10,27 @@ $(document).ready(function(){
         }
     });
 
+    $("#chat_submit_btn").click(function() {
+        var message = $("#chat_input").val();
+        onChatMessageReceive("Me", message)
+
+        var msg = JSON.stringify({"type" : "chatmessage", "username" : user ,"txt" : txt});
+        sendDataMessage(msg);
+    });
+
+    function onChatMessageReceive(user, message) {
+        $("#messageList").append('<li>' + user + ': ' + message + '</li>');
+    }
+
 
     function sendMessageToSignalServer(message) {
         var msgString = JSON.stringify(message);
         wsConnection.send(msgString);
     };
 
-    initRtc("ws://localhost:8080/vmr")
+    initSignalServerConnection("ws://localhost:8080/vmr")
 
-    function initRtc(sURL) {
+    function initSignalServerConnection(sURL) {
         openChannel(sURL);
     };
 
@@ -35,6 +47,7 @@ $(document).ready(function(){
         console.log("Connnected to Signalling server")
         $("#useName").html("Hi! " + user)
         joinChatRoom();
+        createPeerConnection();
     };
 
     function joinChatRoom() {
@@ -80,15 +93,17 @@ $(document).ready(function(){
 
     function onRoomReceived(room) {
         refreshUserList(room)
+        var sessions = room.userSessions;
+        if(sessions.length >= 2) {
+            doCall(room);
+        }
     };
     function refreshUserList(room) {
-        if(room) {
-            var sessions = room.userSessions;
-            clearUserList()
-            for (i = 0; i < sessions.length; i++) {
-                $("#userList").append('<li>' + sessions[i].userName  +  '</li>')
-                var userList = $("#userList");
-            }
+        var sessions = room.userSessions;
+        clearUserList()
+        for (i = 0; i < sessions.length; i++) {
+            $("#userList").append('<li>' + sessions[i].userName  +  '</li>')
+            var userList = $("#userList");
         }
     }
 
@@ -99,21 +114,5 @@ $(document).ready(function(){
     function clearUserList() {
         $("#userList").html("");
     }
-
-
-//    var chatForm = $("#chat_form")
-//    $("#chat_submit_btn").click(function( event ) {
-//      var message = $("#chat_input").val();
-//      var msg = JSON.stringify({"type" : "chatmessage", "txt" : message});
-//      sendDataMessage(msg);
-//    });
-
-
-
-//    function onPrivateMessageReceived(txt) {
-//        var t = $("#chat").html();
-//        t += "<br>" + txt;
-//        $("#chat").html(t);
-//    }
 });
 

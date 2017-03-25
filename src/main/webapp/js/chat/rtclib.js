@@ -112,7 +112,7 @@ $(document).ready(function(){
         console.log("failure callback "+ e.message);
     }
 
-    function doCall() {
+    function doCall(room) {
         createDataChannel("caller");
         peerConnection.createOffer(setLocalAndSendMessage, failureCallback, null);
     };

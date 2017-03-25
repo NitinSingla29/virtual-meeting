@@ -43,6 +43,9 @@ public class MeetingRoomService {
         return meetingRoom;
     }
 
+    public MeetingRoom getMeetingRoom(String sessionId) {
+        return this.meetingRoomRepository.getMeetingRoom(sessionId);
+    }
 }
 
 
