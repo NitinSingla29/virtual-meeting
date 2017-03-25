@@ -62,4 +62,10 @@ public class MeetingRoom {
     public void addSession(UserSession userSession) {
         this.userSessions.add(userSession);
     }
+
+    public void removeSession(UserSession userSession) {
+        if(this.userSessions != null) {
+            this.userSessions.remove(userSession);
+        }
+    }
 }

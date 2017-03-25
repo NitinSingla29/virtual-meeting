@@ -11,4 +11,8 @@ public interface MeetingRoomRepository {
     void addAssociation(MeetingRoom meetingRoom, String userName, String webSocketSessionId);
 
     void addAssociation(int roomNumber, String userName, String webSocketSessionId);
+
+    void removeRoomAssociation(String userName, String webSocketSessionId);
+
+    void removeRoomAssociation(String webSocketSessionId);
 }

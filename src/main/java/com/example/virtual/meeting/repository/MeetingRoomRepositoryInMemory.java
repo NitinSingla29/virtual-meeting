@@ -33,6 +33,23 @@ public class MeetingRoomRepositoryInMemory implements MeetingRoomRepository {
         throw new IllegalArgumentException("No meeting room exist for room number=" + roomNumber);
     }
 
+    @Override
+    public void removeRoomAssociation(final String userName, final String webSocketSessionId) {
+        this.removeRoomAssociation(new UserSession(userName, webSocketSessionId));
+    }
+
+    @Override
+    public void removeRoomAssociation(final String webSocketSessionId) {
+        this.removeRoomAssociation(new UserSession("", webSocketSessionId));
+    }
+
+    private void removeRoomAssociation(UserSession userSession) {
+        final MeetingRoom meetingRoom = this.sessionToRoomMap.get(userSession.getSessionId());
+        if(meetingRoom != null) {
+            meetingRoom.removeSession(userSession);
+        }
+    }
+
     private void addSession(String userName, String webSocketSessionId, MeetingRoom existingRoom) {
         existingRoom.addSession(new UserSession(userName,webSocketSessionId));
         sessionToRoomMap.put(webSocketSessionId, existingRoom);

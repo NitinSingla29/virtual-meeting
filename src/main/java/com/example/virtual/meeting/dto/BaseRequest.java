@@ -1,5 +1,8 @@
 package com.example.virtual.meeting.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class BaseRequest {
 
     private RequestType requestType;

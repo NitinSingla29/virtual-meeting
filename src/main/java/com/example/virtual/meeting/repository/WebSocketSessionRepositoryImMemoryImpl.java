@@ -20,4 +20,14 @@ public class WebSocketSessionRepositoryImMemoryImpl implements WebSocketSessionR
     public WebSocketSession get(String webSocketSessionId) {
         return sessionMap.get(webSocketSessionId);
     }
+
+    @Override
+    public void remove(final String webSocketSessionId) {
+        this.sessionMap.remove(webSocketSessionId);
+    }
+
+    @Override
+    public void remove(final WebSocketSession webSocketSession) {
+        this.sessionMap.remove(webSocketSession.getId());
+    }
 }

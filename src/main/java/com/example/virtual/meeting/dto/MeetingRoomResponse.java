@@ -3,11 +3,11 @@ package com.example.virtual.meeting.dto;
 import com.example.virtual.meeting.domain.MeetingRoom;
 
 public class MeetingRoomResponse extends BaseResponse {
-    private RequestType requestType;
+    private ResponseType type;
     private MeetingRoom meetingRoom;
 
-    public MeetingRoomResponse(final RequestType requestType, final MeetingRoom meetingRoom) {
-        this.requestType = requestType;
+    public MeetingRoomResponse(final ResponseType type, final MeetingRoom meetingRoom) {
+        this.type = type;
         this.meetingRoom = meetingRoom;
     }
 
@@ -15,12 +15,12 @@ public class MeetingRoomResponse extends BaseResponse {
 
     }
 
-    public RequestType getRequestType() {
-        return requestType;
+    public ResponseType getType() {
+        return type;
     }
 
-    public void setRequestType(final RequestType requestType) {
-        this.requestType = requestType;
+    public void setType(final ResponseType type) {
+        this.type = type;
     }
 
     public MeetingRoom getMeetingRoom() {

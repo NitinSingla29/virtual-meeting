@@ -32,13 +32,20 @@
                 </div>
             </div>
             <div class="roomContainer">
-                <div class="chattextarea"></div>
+                <div class="chattextarea">
+                    <div class="chatMessageArea">
+
+                    </div>
+                    <div class="messageInputArea">
+                        <input type="text" class="search-query" placeholder="chat here" name="msg" id="chat_input">
+                        <input type="submit" id="chat_submit_btn"/>
+                    </div>
+                </div>
                 <div class="chatrooms"></div>
-                <div class="chatroomuser"></div>
-                <form name="chat_form">
-                    <input type="text" class="search-query" placeholder="chat here" name="msg" id="chat_input">
-                    <input type="submit"  id="chat_submit_btn"/>
-                </form>
+                <div class="chatroomuser">
+                    <ol id="userList">
+                    </ol>
+                </div>
 
             </div>
 

@@ -41,6 +41,7 @@ $(document).ready(function(){
         var meetingRoomRequest = {};
         meetingRoomRequest["requestType"] = "JOIN_ROOM";
         meetingRoomRequest["userName"] = user
+        meetingRoomRequest["roomNumber"] = 1;
         console.log(JSON.stringify(meetingRoomRequest));
         sendMessageToSignalServer(meetingRoomRequest);
     }
@@ -48,6 +49,7 @@ $(document).ready(function(){
     function onChannelClosed() {
         channelReady = false;
         $("#useName").html("Logged in User: ")
+        clearUserList();
         console.log("Disconnnected from Signalling server")
     };
 
@@ -57,27 +59,46 @@ $(document).ready(function(){
 
     function processSignalingMessage(message) {
         var msg = JSON.parse(message);
-
-        if (msg.requestType === 'offer') {
+        if (msg.type === 'offer') {
             peerConnection.setRemoteDescription(new RTCSessionDescription(msg));
             doAnswer();
-        } else if (msg.requestType === 'answer') {
+        } else if (msg.type === 'answer') {
             peerConnection.setRemoteDescription(new RTCSessionDescription(msg));
-        } else if (msg.requestType === 'candidate') {
+        } else if (msg.type === 'candidate') {
             var candidate = new RTCIceCandidate({sdpMLineIndex:msg.label, candidate:msg.candidate});
             peerConnection.addIceCandidate(candidate);
-        } else if (msg.requestType === 'JOIN_ROOM') {
+        } else if (msg.type === 'JOIN_ROOM') {
             var room = msg.meetingRoom;
             onRoomReceived(room);
-        } else if (msg.requestType === 'WRONGROOM') {
+        } else if (msg.type === 'LEFT_ROOM') {
+            var room = msg.meetingRoom;
+            onRoomLeft(room);
+        }else if (msg.type === 'WRONGROOM') {
             window.location.href = "/";
         }
     };
 
     function onRoomReceived(room) {
-        var st = $("#status")
-        st.html("Now, if somebody wants to join you, should use this link: <a href=\""+window.location.href+"?room="+room+"\">"+window.location.href+"?room="+room+"</a>");
+        refreshUserList(room)
     };
+    function refreshUserList(room) {
+        if(room) {
+            var sessions = room.userSessions;
+            clearUserList()
+            for (i = 0; i < sessions.length; i++) {
+                $("#userList").append('<li>' + sessions[i].userName  +  '</li>')
+                var userList = $("#userList");
+            }
+        }
+    }
+
+    function onRoomLeft(room) {
+        refreshUserList(room)
+    }
+
+    function clearUserList() {
+        $("#userList").html("");
+    }
 
 
 //    var chatForm = $("#chat_form")
