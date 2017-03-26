@@ -1,4 +1,5 @@
 var data_channel = null;
+var initiator = false;
 
 function createPeerConnection() {
     var pc_config = {"iceServers": [{url:'stun:stun.l.google.com:19302'}]};
@@ -37,6 +38,7 @@ function initDataChannel() {
 function createDataChannel(room, role) {
      try {
         data_channel = peerConnection.createDataChannel("datachannel_" + room + role, null);
+        console.log("Created data channel: " + JSON.stringify(data_channel))
      } catch (e) {
          console.log('error creating data sserverWsConnetion ' + e);
          return;
@@ -46,16 +48,20 @@ function createDataChannel(room, role) {
 
 function doCall(room) {
     createDataChannel("caller");
+    console.log("Making an offer call for peer connection.")
     peerConnection.createOffer(setLocalAndSendMessage, failureCallback, null);
 };
 
 function doAnswer() {
+    console.log("Answering an offer call from peer")
     peerConnection.createAnswer(setLocalAndSendMessage, failureCallback, null);
 };
 
 
 function setLocalAndSendMessage(sessionDescription) {
+    console.log("Set local session description: " + JSON.stringify(sessionDescription))
     peerConnection.setLocalDescription(sessionDescription);
+    console.log("Sending session description to Signal server")
     sendMessageToSignalServer(sessionDescription);
 };
 
@@ -68,7 +74,7 @@ function onChannelStateChange() {
 }
 
 function onReceiveMessageCallback(event) {
-    console.log(event);
+    console.log("Message received from RTC peer: " + event);
     try {
         var msg = JSON.parse(event.data);
         if (msg.type === 'chatmessage') onChatMessageReceive(msgusername, msg.txt);

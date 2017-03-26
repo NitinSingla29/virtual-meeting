@@ -44,20 +44,28 @@ public class MeetingEndpointHandler extends AbstractWebSocketHandler {
                 case JOIN_ROOM:
                     meetingRoomRequest = jsonSerializer.read(payload, MeetingRoomRequest.class);
                     final MeetingRoom meetingRoom = this.meetingRoomService.joinMeetingRoon(meetingRoomRequest, webSocketSessionId);
-                    handleMeetingRoomUpdate(ResponseType.JOIN_ROOM, meetingRoom);
+
+                    sendReply(new MeetingRoomResponse(ResponseType.JOIN_ROOM, meetingRoom), webSocketSessionId);
+                    handleMeetingRoomUpdate(ResponseType.ROOM_UPDATED, meetingRoom, session.getId());
                     break;
                 default:
                     final Collection<String> allLinkedConnections = getAllLinkedConnections(webSocketSessionId);
                     allLinkedConnections.remove(webSocketSessionId);
-                    sendToAll(allLinkedConnections, message);
+                    sendReply(message, allLinkedConnections.toArray(new String[0]));
             }
         } catch(final IOException e) {
             e.printStackTrace();
         }
     }
 
-    private void handleMeetingRoomUpdate(ResponseType type, MeetingRoom meetingRoom) throws IOException {
-        sendToAll(getSessions(meetingRoom), new MeetingRoomResponse(type, meetingRoom));
+    private void handleMeetingRoomUpdate(ResponseType type, MeetingRoom meetingRoom, String excludingSessionId)
+            throws
+            IOException {
+        final List<String> allMeetingRoomSessions = getSessions(meetingRoom);
+        if(excludingSessionId != null) {
+            allMeetingRoomSessions.remove(excludingSessionId);
+        }
+        sendReply(new MeetingRoomResponse(type, meetingRoom), allMeetingRoomSessions.toArray(new String[0]));
     }
 
     private List<String> getSessions(final MeetingRoom meetingRoom) {
@@ -72,7 +80,7 @@ public class MeetingEndpointHandler extends AbstractWebSocketHandler {
         return new ArrayList<>();
     }
 
-    private void sendToAll(final Collection<String> sessionIds, final Object message) throws IOException {
+    private void sendReply(final Object message, String... sessionIds) throws IOException {
         final TextMessage textMessage = new TextMessage(jsonSerializer.writeObject(message));
         for(final String sessionId : sessionIds) {
             final WebSocketSession webSocketSession = this.webSocketSessionRepository.get(sessionId);
@@ -83,7 +91,7 @@ public class MeetingEndpointHandler extends AbstractWebSocketHandler {
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
         this.webSocketSessionRepository.remove(session);
         final MeetingRoom meetingRoom = this.meetingRoomService.leaveMeetingRoom(session.getId());
-        this.handleMeetingRoomUpdate(ResponseType.LEFT_ROOM, meetingRoom);
+        this.handleMeetingRoomUpdate(ResponseType.ROOM_UPDATED, meetingRoom, session.getId());
     }
 
     @Override

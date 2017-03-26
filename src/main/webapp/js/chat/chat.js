@@ -1,8 +1,15 @@
+var wsConnection;
+var channelReady = false;
+
+function sendMessageToSignalServer(message) {
+    var msgString = JSON.stringify(message);
+    wsConnection.send(msgString);
+};
+
 $(document).ready(function(){
     var user = $.url().param('u');
 
-    var wsConnection;
-    var channelReady = false;
+
 
     $("#endChatButton").click(function() {
         if(channelReady && wsConnection.readyState === WebSocket.OPEN) {
@@ -21,12 +28,6 @@ $(document).ready(function(){
     function onChatMessageReceive(user, message) {
         $("#messageList").append('<li>' + user + ': ' + message + '</li>');
     }
-
-
-    function sendMessageToSignalServer(message) {
-        var msgString = JSON.stringify(message);
-        wsConnection.send(msgString);
-    };
 
     initSignalServerConnection("ws://localhost:8080/vmr")
 
@@ -52,10 +53,11 @@ $(document).ready(function(){
 
     function joinChatRoom() {
         var meetingRoomRequest = {};
-        meetingRoomRequest["requestType"] = "JOIN_ROOM";
+        meetingRoomRequest["type"] = "JOIN_ROOM";
         meetingRoomRequest["userName"] = user
         meetingRoomRequest["roomNumber"] = 1;
         console.log(JSON.stringify(meetingRoomRequest));
+        console.log("Sent message to signal server to join chat room");
         sendMessageToSignalServer(meetingRoomRequest);
     }
 
@@ -67,34 +69,42 @@ $(document).ready(function(){
     };
 
     function onChannelMessage(message) {
+        console.log("Message received from signal server. " + JSON.stringify(message.data))
         processSignalingMessage(message.data);
     };
 
     function processSignalingMessage(message) {
         var msg = JSON.parse(message);
-        if (msg.type === 'offer') {
+        var messageType;
+        if(msg.payload) {
+            msg = JSON.parse(msg.payload)
+        }
+        messageType = msg.type;
+        if (messageType === 'offer') {
             peerConnection.setRemoteDescription(new RTCSessionDescription(msg));
             doAnswer();
-        } else if (msg.type === 'answer') {
+        } else if (messageType === 'answer') {
             peerConnection.setRemoteDescription(new RTCSessionDescription(msg));
-        } else if (msg.type === 'candidate') {
+        } else if (messageType === 'candidate') {
             var candidate = new RTCIceCandidate({sdpMLineIndex:msg.label, candidate:msg.candidate});
             peerConnection.addIceCandidate(candidate);
-        } else if (msg.type === 'JOIN_ROOM') {
+        } else if (messageType === 'JOIN_ROOM') {
             var room = msg.meetingRoom;
             onRoomReceived(room);
-        } else if (msg.type === 'LEFT_ROOM') {
+        } else if (messageType === 'ROOM_UPDATED') {
             var room = msg.meetingRoom;
-            onRoomLeft(room);
-        }else if (msg.type === 'WRONGROOM') {
+            onRoomUpdate(room);
+        } else if (messageType === 'WRONGROOM') {
             window.location.href = "/";
         }
     };
 
     function onRoomReceived(room) {
+        console.log("Event received : JOIN_ROOM for room: " + JSON.stringify(room))
         refreshUserList(room)
         var sessions = room.userSessions;
         if(sessions.length >= 2) {
+            console.log("Initiating RTC call.")
             doCall(room);
         }
     };
@@ -105,9 +115,11 @@ $(document).ready(function(){
             $("#userList").append('<li>' + sessions[i].userName  +  '</li>')
             var userList = $("#userList");
         }
+        console.log("Refreshed user list.")
     }
 
-    function onRoomLeft(room) {
+    function onRoomUpdate(room) {
+        console.log("Event received: ROOM_UPDATED")
         refreshUserList(room)
     }
 

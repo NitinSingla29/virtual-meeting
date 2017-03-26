@@ -5,20 +5,17 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class BaseRequest {
 
-    private RequestType requestType;
+    private String type;
 
-    public BaseRequest(final RequestType requestType) {
-        this.requestType = requestType;
-    }
-
-    public BaseRequest() {
+    private String getType() {
+        return type;
     }
 
     public RequestType getRequestType() {
-        return requestType;
+        return RequestType.valueOf(this.type.toUpperCase());
     }
 
-    public void setRequestType(final RequestType requestType) {
-        this.requestType = requestType;
+    public void setType(final String type) {
+        this.type = type;
     }
 }
