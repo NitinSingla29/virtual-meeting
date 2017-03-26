@@ -77,7 +77,7 @@ function onReceiveMessageCallback(event) {
     console.log("Message received from RTC peer: " + event);
     try {
         var msg = JSON.parse(event.data);
-        if (msg.type === 'chatmessage') onChatMessageReceive(msgusername, msg.txt);
+        if (msg.type === 'chatmessage') onChatMessageReceive(msg.username, msg.txt);
     }
     catch (e) {}
 };

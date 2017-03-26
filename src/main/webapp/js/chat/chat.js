@@ -6,10 +6,12 @@ function sendMessageToSignalServer(message) {
     wsConnection.send(msgString);
 };
 
+function onChatMessageReceive(user, message) {
+    $("#messageList").append('<li>' + user + ': ' + message + '</li>');
+}
+
 $(document).ready(function(){
     var user = $.url().param('u');
-
-
 
     $("#endChatButton").click(function() {
         if(channelReady && wsConnection.readyState === WebSocket.OPEN) {
@@ -17,17 +19,16 @@ $(document).ready(function(){
         }
     });
 
-    $("#chat_submit_btn").click(function() {
-        var message = $("#chat_input").val();
-        onChatMessageReceive("Me", message)
+    $("#chat_input").keypress(function(event) {
+        if (event.which == 13) {
+            var message = $("#chat_input").val();
+            $("#chat_input").val("");
+            onChatMessageReceive("Me", message)
 
-        var msg = JSON.stringify({"type" : "chatmessage", "username" : user ,"txt" : txt});
-        sendDataMessage(msg);
+            var msg = JSON.stringify({"type" : "chatmessage", "username" : user ,"txt" : message});
+            sendDataMessage(msg);
+        }
     });
-
-    function onChatMessageReceive(user, message) {
-        $("#messageList").append('<li>' + user + ': ' + message + '</li>');
-    }
 
     initSignalServerConnection("ws://localhost:8080/vmr")
 
