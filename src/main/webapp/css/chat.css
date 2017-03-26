@@ -26,12 +26,9 @@
     width: 90%;
     float: left;
     border: 0px;
+    outline: 0;
 }
 
-#chat_submit_btn {
-    float: right;
-    width: 9%;
-}
 .roomContainer .chatrooms {
     width: 0%;
     height: 100%;
