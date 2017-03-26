@@ -1,7 +1,6 @@
 .pagecontainer {
     width: 800px;
     margin: 0 auto;
-    background-color: lightblue;
     border: 1px solid black;
     display: table;
 }
@@ -10,6 +9,8 @@
     width: 100%;
     text-align: center;
     position: relative;
+    border-bottom: 1px solid black;
+    background-color: lightblue;
 }
 .pageTitle {
     width: 100%;
