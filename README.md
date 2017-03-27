@@ -1,4 +1,4 @@
-#[spring-boot-sample-web-socket](http://localhost:8080/)
+#[Virtual-Meeting-Room](http://localhost:8080/)
 
 This is a sample application to enable virtual meeting via text chat, video chat and audio chat.
 
@@ -9,11 +9,19 @@ This is a sample application to enable virtual meeting via text chat, video chat
     mvn spring-boot:run
 
 ######Application end point
-    http://localhost:8080/
-    http://localhost:8080/hello
-    http://localhost:8080/html/index.html
-    ws://localhost:8080/vmr
+    Testing end points
+        http://localhost:8080/
+        http://localhost:8080/hello
+        http://localhost:8080/html/index.html
+        ws://localhost:8080/vmr
     
+    End point to start chatting application
+        http://localhost:8080/html/chat.html?u=Varun
+
+######Usage
+    Open following two links and start text chat between
+         http://localhost:8080/html/chat.html?u=Varun
+         http://localhost:8080/html/chat.html?u=Nitin
     
 ######Reference
     https://github.com/webrtc/adapter
@@ -24,4 +32,6 @@ This is a sample application to enable virtual meeting via text chat, video chat
     https://www.html5rocks.com/ko/tutorials/webrtc/basics/
     
 ######Java Script library Used
-https://github.com/allmarkedup/purl/edit/master/purl.js
+    jquery-3.1.1.js
+    adapter.js
+    https://github.com/allmarkedup/purl/edit/master/purl.js
