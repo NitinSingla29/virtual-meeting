@@ -19,6 +19,11 @@ $(document).ready(function(){
         }
     });
 
+    $("#userList li").click(function() {
+//        $("#userList li").removeClass('selected');
+        $(this).addClass('selected');
+    });
+
     $("#chat_input").keypress(function(event) {
         if (event.which == 13) {
             var message = $("#chat_input").val();
@@ -47,7 +52,7 @@ $(document).ready(function(){
     function onChannelOpened() {
         channelReady = true;
         console.log("Connnected to Signalling server")
-        $("#useName").html("Hi! " + user)
+        $("#userName").html("Hi! " + user)
         joinChatRoom();
         createPeerConnection();
     };
