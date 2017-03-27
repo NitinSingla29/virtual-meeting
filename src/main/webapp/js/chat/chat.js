@@ -19,9 +19,10 @@ $(document).ready(function(){
         }
     });
 
-    $("#userList li").click(function() {
-//        $("#userList li").removeClass('selected');
-        $(this).addClass('selected');
+
+
+    $("#userList li").on("click", function(){
+      console.log("Doesn't work either");
     });
 
     $("#chat_input").keypress(function(event) {
@@ -118,9 +119,13 @@ $(document).ready(function(){
         var sessions = room.userSessions;
         clearUserList()
         for (i = 0; i < sessions.length; i++) {
-            $("#userList").append('<li>' + sessions[i].userName  +  '</li>')
+            $("#userList").append('<li value="'+ sessions[i].sessionId+ '">' + sessions[i].userName  +  '</li>')
             var userList = $("#userList");
         }
+        $("#userList > li").click(function() {
+            $("#userList li").removeClass('selected');
+            $(this).addClass('selected');
+        });
         console.log("Refreshed user list.")
     }
 
