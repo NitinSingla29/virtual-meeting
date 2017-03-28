@@ -19,7 +19,7 @@ This is a sample application to enable virtual meeting via text chat, video chat
         http://localhost:8080/html/chat.html?u=Varun
 
 ######Usage
-    Open following two links and start text chat between
+    Open following two links and start text chat between Varun and Nitin
          http://localhost:8080/html/chat.html?u=Varun
          http://localhost:8080/html/chat.html?u=Nitin
     
